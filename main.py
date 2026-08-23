@@ -1,13 +1,14 @@
+import sys
 import socket
 import threading
+import traceback
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
-
-Window.clearcolor = (0.12, 0.12, 0.12, 1)
 
 class ProxyCore:
     def __init__(self, host='127.0.0.1', port=8080, split_pos=2):
@@ -115,56 +116,70 @@ class ProxyCore:
 
 class BratvaDPI(App):
     def build(self):
-        self.proxy = ProxyCore()
-        layout = BoxLayout(orientation='vertical', padding=30, spacing=15)
-        
-        title = Label(
-            text='[b]BratvaDPI[/b]',
-            markup=True,
-            font_size='28sp',
-            size_hint_y=0.2,
-            color=(0.9, 0.9, 0.9, 1)
-        )
-        layout.add_widget(title)
+        try:
+            Window.clearcolor = (0.12, 0.12, 0.12, 1)
+            self.proxy = ProxyCore()
+            
+            layout = BoxLayout(orientation='vertical', padding=30, spacing=15)
+            
+            title = Label(
+                text='[b]BratvaDPI[/b]',
+                markup=True,
+                font_size='28sp',
+                size_hint_y=0.2,
+                color=(0.9, 0.9, 0.9, 1)
+            )
+            layout.add_widget(title)
 
-        self.status_label = Label(
-            text='Статус: Остановлен',
-            font_size='16sp',
-            size_hint_y=0.15,
-            color=(0.8, 0.2, 0.2, 1)
-        )
-        layout.add_widget(self.status_label)
+            self.status_label = Label(
+                text='Статус: Остановлен',
+                font_size='16sp',
+                size_hint_y=0.15,
+                color=(0.8, 0.2, 0.2, 1)
+            )
+            layout.add_widget(self.status_label)
 
-        self.port_input = TextInput(
-            text='8080',
-            multiline=False,
-            hint_text='SOCKS5 Port',
-            size_hint_y=0.15,
-            background_color=(0.2, 0.2, 0.2, 1),
-            foreground_color=(1, 1, 1, 1)
-        )
-        layout.add_widget(self.port_input)
+            self.port_input = TextInput(
+                text='8080',
+                multiline=False,
+                hint_text='SOCKS5 Port',
+                size_hint_y=0.15,
+                background_color=(0.2, 0.2, 0.2, 1),
+                foreground_color=(1, 1, 1, 1)
+            )
+            layout.add_widget(self.port_input)
 
-        self.split_input = TextInput(
-            text='2',
-            multiline=False,
-            hint_text='Split Position (Bytes)',
-            size_hint_y=0.15,
-            background_color=(0.2, 0.2, 0.2, 1),
-            foreground_color=(1, 1, 1, 1)
-        )
-        layout.add_widget(self.split_input)
+            self.split_input = TextInput(
+                text='2',
+                multiline=False,
+                hint_text='Split Position (Bytes)',
+                size_hint_y=0.15,
+                background_color=(0.2, 0.2, 0.2, 1),
+                foreground_color=(1, 1, 1, 1)
+            )
+            layout.add_widget(self.split_input)
 
-        self.btn_toggle = Button(
-            text='Запустить',
-            size_hint_y=0.2,
-            background_color=(0.1, 0.6, 0.3, 1),
-            font_size='18sp'
-        )
-        self.btn_toggle.bind(on_press=self.toggle_proxy)
-        layout.add_widget(self.btn_toggle)
+            self.btn_toggle = Button(
+                text='Запустить',
+                size_hint_y=0.2,
+                background_color=(0.1, 0.6, 0.3, 1),
+                font_size='18sp'
+            )
+            self.btn_toggle.bind(on_press=self.toggle_proxy)
+            layout.add_widget(self.btn_toggle)
 
-        return layout
+            return layout
+        except Exception:
+            err_layout = ScrollView()
+            err_label = Label(
+                text=traceback.format_exc(),
+                font_size='12sp',
+                color=(1, 0.2, 0.2, 1),
+                size_hint_y=None
+            )
+            err_label.bind(texture_size=err_label.setter('size'))
+            err_layout.add_widget(err_label)
+            return err_layout
 
     def toggle_proxy(self, instance):
         if not self.proxy.running:
