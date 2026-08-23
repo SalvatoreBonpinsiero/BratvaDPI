@@ -2,8 +2,6 @@
 
 <img src="https://raw.githubusercontent.com/SalvatoreBonpinsiero/BratvaDPI/refs/heads/main/0823.gif" alt="BratvaDPI Logo" width="300" />
 
-# BratvaDPI
-
 <p>Утилита на Python для обхода сетевых ограничений и блокировок сервисов на территории РФ.</p>
 
 <p>
