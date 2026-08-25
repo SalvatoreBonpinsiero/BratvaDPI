@@ -24,22 +24,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.buildozer
-            .buildozer
-          key: buildozer-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
-          restore-keys: |
-            buildozer-${{ runner.os }}-
-
       - name: Install build tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5 libncursesw5 cmake libffi-dev libssl-dev libltdl-dev
+          sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5 libncursesw5 cmake libffi-dev libssl-dev libltdl-dev ccache
           pip install --upgrade pip
-          pip install "setuptools<69" "cython<3.0" "buildozer>=1.5.0" virtualenv
+          pip install "cython==0.29.36" "buildozer==1.5.0" virtualenv
 
       - name: Build APK
         run: |
@@ -49,5 +39,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: BratvaDPI-Universal
+          name: BratvaDPI-arm64
           path: bin/*.apk
