@@ -21,6 +21,7 @@ android {
 
         python {
             version "3.11"
+            buildPython "python3"
         }
     }
 
