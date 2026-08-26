@@ -28,14 +28,16 @@ jobs:
           pip install --upgrade pip
           pip install briefcase
 
-      - name: Create and Package Android APK
+      - name: Build Android APK
         run: |
           briefcase create android
           briefcase build android
-          briefcase package android --adhoc-sign
+          briefcase package android -p debug-apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BratvaDPI-APK
-          path: dist/*.apk
+          path: |
+            dist/*.apk
+            build/**/outputs/apk/**/*.apk
