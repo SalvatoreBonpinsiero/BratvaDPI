@@ -16,7 +16,7 @@ jobs:
       - name: Fix permissions and build
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          buildozer --warn-on-root=0 -v android debug
+          yes | buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
