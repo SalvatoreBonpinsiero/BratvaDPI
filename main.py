@@ -5,6 +5,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.clock import Clock
 
 class ProxyCore:
     def __init__(self, host='127.0.0.1', port=8080, split_pos=2):
@@ -116,46 +117,44 @@ class ProxyCore:
 class BratvaDPI(App):
     def build(self):
         self.proxy = ProxyCore()
-        layout = BoxLayout(orientation='vertical', padding=20, spacing=10)
+        self.layout = BoxLayout(orientation='vertical', padding=20, spacing=15)
         
-        title = Label(
+        self.title_lbl = Label(
             text='BratvaDPI',
             font_size='26sp',
-            size_hint_y=0.2
+            size_hint_y=0.25
         )
-        layout.add_widget(title)
+        self.layout.add_widget(self.title_lbl)
 
         self.status_label = Label(
             text='Status: Stopped',
             font_size='16sp',
-            size_hint_y=0.15
+            size_hint_y=0.2
         )
-        layout.add_widget(self.status_label)
+        self.layout.add_widget(self.status_label)
 
         self.port_input = TextInput(
             text='8080',
             multiline=False,
-            hint_text='Port',
             size_hint_y=0.15
         )
-        layout.add_widget(self.port_input)
+        self.layout.add_widget(self.port_input)
 
         self.split_input = TextInput(
             text='2',
             multiline=False,
-            hint_text='Split Position',
             size_hint_y=0.15
         )
-        layout.add_widget(self.split_input)
+        self.layout.add_widget(self.split_input)
 
         self.btn_toggle = Button(
             text='Start',
-            size_hint_y=0.2
+            size_hint_y=0.25
         )
         self.btn_toggle.bind(on_press=self.toggle_proxy)
-        layout.add_widget(self.btn_toggle)
+        self.layout.add_widget(self.btn_toggle)
 
-        return layout
+        return self.layout
 
     def toggle_proxy(self, instance):
         if not self.proxy.running:
