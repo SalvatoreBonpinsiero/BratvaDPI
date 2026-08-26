@@ -4,8 +4,7 @@ requires = ["briefcase"]
 [project]
 name = "bratvadpi"
 version = "1.0.0"
-description = "BratvaDPI Proxy"
-authors = [{name = "Bratva", email = "dev@example.com"}]
+description = "BratvaDPI"
 dependencies = [
     "toga-android>=0.4.0",
 ]
@@ -24,7 +23,7 @@ author_email = "dev@example.com"
 
 [tool.briefcase.app.bratvadpi]
 formal_name = "BratvaDPI"
-description = "BratvaDPI SOCKS5 Desync Proxy"
+description = "BratvaDPI Desync SOCKS5"
 sources = ["src/bratvadpi"]
 
 [tool.briefcase.app.bratvadpi.android]
