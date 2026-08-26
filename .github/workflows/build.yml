@@ -9,7 +9,7 @@ jobs:
   android:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -25,19 +25,22 @@ jobs:
 
       - name: Install Briefcase
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install briefcase
 
       - name: Build Android APK
         run: |
           briefcase create android
           briefcase build android
-          briefcase package android -p debug-apk
 
-      - name: Upload APK
+      - name: Locate and Package APK
+        run: |
+          find . -name "*.apk"
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: BratvaDPI-APK
           path: |
-            dist/*.apk
             build/**/outputs/apk/**/*.apk
+            dist/*.apk
