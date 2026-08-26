@@ -1,0 +1,36 @@
+[build-system]
+requires = ["briefcase"]
+
+[project]
+name = "bratvadpi"
+version = "1.0.0"
+description = "BratvaDPI Proxy"
+authors = [{name = "Bratva", email = "dev@example.com"}]
+dependencies = [
+    "toga-android>=0.4.0",
+]
+
+[project.scripts]
+bratvadpi = "bratvadpi.app:main"
+
+[tool.briefcase]
+project_name = "BratvaDPI"
+bundle = "org.bratva"
+version = "1.0.0"
+url = "https://github.com"
+license.text = "MIT"
+author = "Bratva"
+author_email = "dev@example.com"
+
+[tool.briefcase.app.bratvadpi]
+formal_name = "BratvaDPI"
+description = "BratvaDPI SOCKS5 Desync Proxy"
+sources = ["src/bratvadpi"]
+
+[tool.briefcase.app.bratvadpi.android]
+min_sdk_version = 24
+target_sdk_version = 33
+permissions = [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE"
+]
