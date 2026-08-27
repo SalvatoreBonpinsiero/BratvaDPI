@@ -1,9 +1,9 @@
-name: Build APK
+name: Build APK Release
 
 on:
   push:
     branches: [ "main", "master" ]
-  workflow_dispatch:
+  workflow_dispatch: 
 
 jobs:
   build:
@@ -32,11 +32,10 @@ jobs:
 
       - name: Build APK via Flet
         run: |
-          # Flet автоматически скачает Flutter SDK и Android SDK
-          flet build apk --project-name BratvaDPI --org com.salvatorebonpinsiero.bratvadpi
+          flet build apk --project bratvadpi --org com.salvatorebonpinsiero.bratvadpi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: BratvaDPI-App
-          path: build/apk/app-release.apk
+          name: BratvaDPI-Release
+          path: build/apk/*.apk
