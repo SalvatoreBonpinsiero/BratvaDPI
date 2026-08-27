@@ -2,7 +2,8 @@ import flet as ft
 import asyncio
 import threading
 import sys
-import webbrowser 
+import webbrowser
+import subprocess
 
 class LocalDPIProxy:
     def __init__(self, host, port, split_pos, log_callback):
@@ -154,7 +155,7 @@ class BratvaDPIApp:
         self.page.overlay.append(self.settings_dialog)
 
         self.title_text = ft.Text("BRATVADPI", size=24, weight=ft.FontWeight.W_200, color="#E0E0E0", style=ft.TextStyle(letter_spacing=3))
-        self.subtitle_text = ft.Text("MOBILE PROXY", size=10, weight=ft.FontWeight.W_300, color="#757575", style=ft.TextStyle(letter_spacing=2))
+        self.subtitle_text = ft.Text("ROOT MOBILE", size=10, weight=ft.FontWeight.W_300, color="#757575", style=ft.TextStyle(letter_spacing=2))
 
         github_button = ft.Container(
             content=ft.Text("GITHUB", color="#888888", size=11, weight=ft.FontWeight.W_400, style=ft.TextStyle(letter_spacing=1)),
@@ -271,6 +272,30 @@ class BratvaDPIApp:
         self.proxy_thread = threading.Thread(target=self.proxy.run_in_thread, daemon=True)
         self.proxy_thread.start()
 
+        try:
+            pkg = "com.salvatorebonpinsiero.bratvadpi"
+            
+            uid_res = subprocess.run(["su", "-c", f"dumpsys package {pkg} | grep userId"], capture_output=True, text=True, check=False)
+            uid = ""
+            for line in uid_res.stdout.splitlines():
+                if "userId=" in line:
+                    uid = line.split("userId=")[1].strip()
+                    break
+
+            subprocess.run(["su", "-c", f"dumpsys deviceidle whitelist +{pkg}"], check=False)
+
+            if uid:
+                rule = f"iptables -t nat -A OUTPUT -p tcp -m owner ! --uid-owner {uid} -j REDIRECT --to-ports {port}"
+            else:
+                rule = f"iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-ports {port}"
+                
+            subprocess.run(["su", "-c", rule], check=True)
+            
+            self.log("[+] Root: Весь трафик приложений перехвачен", "#4CAF50")
+            self.log("[+] Фоновый режим активирован", "#4CAF50")
+        except Exception:
+            self.log("[!] Ошибка: Нет Root-прав или iptables недоступен", "#CF6679")
+
         self.status_dot.bgcolor = "#4CAF50"
         self.status_text.value = f"Активен: {ip}:{port}"
         self.status_text.color = "#E0E0E0"
@@ -284,6 +309,13 @@ class BratvaDPIApp:
         if self.proxy:
             self.proxy.stop()
             self.proxy = None
+
+        port = int(self.port_input.value.strip())
+        try:
+            subprocess.run(["su", "-c", f"iptables -t nat -D OUTPUT -p tcp -j REDIRECT --to-ports {port}"], check=False)
+            self.log("[-] Root: Маршрутизация сброшена", "#888888")
+        except Exception:
+            pass
 
         self.status_dot.bgcolor = "#555555"
         self.status_text.value = "Служба остановлена"
