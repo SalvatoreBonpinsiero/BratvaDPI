@@ -28,18 +28,16 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flet
+          pip install flet Pillow
           if [ ! -f requirements.txt ]; then 
             echo "flet" > requirements.txt
           fi
 
-      - name: Prepare Assets (Logo)
-        # Создаем папку assets и скачиваем туда ваш логотип, конвертируя в icon.png (требование Flet)
+      - name: Prepare Assets
         run: |
           mkdir -p assets
           wget -O temp_logo.jpg "https://raw.githubusercontent.com/SalvatoreBonpinsiero/BratvaDPI/refs/heads/main/logo.jpg"
-          # Используем встроенный в Ubuntu ImageMagick для безопасной конвертации jpg -> png
-          magick temp_logo.jpg assets/icon.png
+          python -c "from PIL import Image; Image.open('temp_logo.jpg').save('assets/icon.png')"
           rm temp_logo.jpg
 
       - name: Build APK via Flet
