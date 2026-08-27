@@ -33,6 +33,15 @@ jobs:
             echo "flet" > requirements.txt
           fi
 
+      - name: Prepare Assets (Logo)
+        # Создаем папку assets и скачиваем туда ваш логотип, конвертируя в icon.png (требование Flet)
+        run: |
+          mkdir -p assets
+          wget -O temp_logo.jpg "https://raw.githubusercontent.com/SalvatoreBonpinsiero/BratvaDPI/refs/heads/main/logo.jpg"
+          # Используем встроенный в Ubuntu ImageMagick для безопасной конвертации jpg -> png
+          magick temp_logo.jpg assets/icon.png
+          rm temp_logo.jpg
+
       - name: Build APK via Flet
         run: yes | flet build apk -v --project bratvadpi --org com.salvatorebonpinsiero.bratvadpi
 
